@@ -9,11 +9,11 @@ The command to install the module is `pip install stresstify`
 ***
 
 ### RAM Test
-The `ram_test()` method performs a simple stress test on the system's RAM by loading files of approximately 8 MB into memory. When using `debug=True`, it records the elapsed time and memory usage percentage for each iteration.
+The `ram_test()` method performs a simple stress test on the system's RAM by loading files of approximately 8 MB into memory. When using `debug=True`, it records the elapsed time and memory usage percentage for each iteration. The `size` parameter defines how many MB will be added per iteration, with a default value of 8.
 
 ``` python
 import stresstify
-root = StressTest(debug=True)
+root = stresstify.StressTest(debug=True)
 result = root.ram_test()
 print(result)
 ```
@@ -23,13 +23,13 @@ Output:
 ```
 ***
 ### Memory Test
-The memory_test() method checks the disk write and read speeds by creating a temporary 1 GB binary file, which is immediately deleted. With debug=True, it displays the average write speed and average write time; with debug=False, it outputs only the values from the last iteration. Below are the key values in the dictionary and their meanings:
-* average_write_time: Average time taken to write the data in seconds.
-* average_read_speed: Average read speed in MB/s.
-* read_average_time: Average time taken to read the data in seconds.
+The `memory_test()` method checks the disk write and read speeds by creating a temporary 1 GB binary file, which is immediately deleted. With `debug=True`, it displays the average write speed and average write time; with `debug=False`, it outputs only the values from the last iteration. Below are the key values in the dictionary and their meanings:
+* `average_write_time`: Average time taken to write the data in seconds.
+* `average_read_speed`: Average read speed in MB/s.
+* `read_average_time`: Average time taken to read the data in seconds.
 ``` python
 import stresstify
-root = StressTest(debug=True)
+root = stresstify.StressTest(debug=True)
 result = root.memory_test()
 print(result)
 ```
@@ -39,16 +39,16 @@ Output:
 ```
 ***
 ### CPU Test 
-The `cpu_test()` method utilizes all available processor cores for intensive computations. It accepts an optional parameter size (default is 10^7). When debug=True, it returns a dictionary containing:
-* average_cpu_load: Average CPU load.
-* average_cpu_freq: Average CPU frequency.
-* cpu_load_dict: A dictionary with the key "start" representing the initial CPU load, followed by the load for each iteration.
-* cpu_freq_dict: A dictionary with the key "start" representing the initial CPU frequency, followed by the frequency for each iteration.
-* time_dict: The elapsed time for each iteration. (Note: The time values might not strictly increase, as different cores may complete tasks at varying speeds.)
+The `cpu_test()` method utilizes all available processor cores for intensive computations. It accepts an optional parameter `size` (default is 10^7). The `iterations` parameter defines how many times the CPU will need to perform the task, with a default value of 11. When `debug=True`, it returns a dictionary containing:
+* `average_cpu_load`: Average CPU load.
+* `average_cpu_freq`: Average CPU frequency.
+* `cpu_load_dict`: A dictionary with the key "start" representing the initial CPU load, followed by the load for each iteration.
+* `cpu_freq_dict`: A dictionary with the key "start" representing the initial CPU frequency, followed by the frequency for each iteration.
+* `time_dict`: The elapsed time for each iteration. (Note: The time values might not strictly increase, as different cores may complete tasks at varying speeds.)
 ``` python
 import stresstify
 if __name__ == '__main__':
-    root = StressTest(debug=True)
+    root = stresstify.StressTest(debug=True)
     result = root.cpu_test()
     print(result)
 ```
@@ -59,16 +59,16 @@ Output:
 ***
 ### CPU Info
 The standalone function `cpu_info()` provides detailed information about the processor:
-* cpu_name: The name of the processor.
-* physical_cores: Number of physical cores.
-* logical_cores: Number of logical cores.
-* max_frequency: Maximum CPU frequency.
-* min_frequency: Minimum CPU frequency.
-* current_frequency: Current CPU frequency.
-* cpu_percent: A list showing the load percentage for each core.
+* `cpu_name`: The name of the processor.
+* `physical_cores`: Number of physical cores.
+* `logical_cores`: Number of logical cores.
+* `max_frequency`: Maximum CPU frequency.
+* `min_frequency`: Minimum CPU frequency.
+* `current_frequency`: Current CPU frequency.
+* `cpu_percent`: A list showing the load percentage for each core.
 ``` python
 import stresstify
-root = cpu_info()
+root = stresstify.cpu_info()
 print(root)
 ```
 Output:
@@ -78,13 +78,13 @@ Output:
 ***
 ### RAM Info
 The `memory_info()` function retrieves details about the system's RAM:
-* Total_GB: Total RAM in gigabytes.
-* Used_GB: Amount of RAM currently used (in gigabytes).
-* Free_GB: Amount of free RAM (in gigabytes).
-* Percent: Percentage of RAM utilization.
+* `Total_GB`: Total RAM in gigabytes.
+* `Used_GB`: Amount of RAM currently used (in gigabytes).
+* `Free_GB`: Amount of free RAM (in gigabytes).
+* `Percent`: Percentage of RAM utilization.
 ``` python
 import stresstify
-root = memory_info()
+root = stresstify.memory_info()
 print(root)
 ```
 Output:
@@ -94,14 +94,14 @@ Output:
 ***
 ### Disk Info
 The `disk_info()` function displays information about each disk partition. For each partition, it provides:
-* mountpoint: The path where the partition is mounted (e.g., "C:\", "/mnt/data").
-* total_size_GB: Total size of the partition in gigabytes.
-* used_size_GB: Used space on the partition in gigabytes.
-* free_size_GB: Free space on the partition in gigabytes.
-* usage_percent: Percentage of the partition's used space.
+* `mountpoint`: The path where the partition is mounted (e.g., "C:\", "/mnt/data").
+* `total_size_GB`: Total size of the partition in gigabytes.
+* `used_size_GB`: Used space on the partition in gigabytes.
+* `free_size_GB`: Free space on the partition in gigabytes.
+* `usage_percent`: Percentage of the partition's used space.
 ``` python
 import stresstify
-root = disk_info()
+root = stresstify.disk_info()
 print(root)
 ```
 Output:
