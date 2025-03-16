@@ -56,8 +56,8 @@ class StressTest:
     def __init__(self, debug=False):
         self.debug = debug
 
-    def ram_test(self):
-        num_elements = 8 * 1024 * 1024 // 4  # 8 MB
+    def ram_test(self, size=8):
+        num_elements = size * 1024 * 1024 // 4  # 8 MB
         elements = []
         start_time = time.time()
         ram_used = {}
@@ -128,7 +128,7 @@ class StressTest:
             }
             return full_dict
 
-    def cpu_test(self, size=10000000):
+    def cpu_test(self, size=10000000, iterations=11):
         number_a = 2 ** 256
 
         start_cpu_load = psutil.cpu_percent(interval=1)
@@ -139,7 +139,7 @@ class StressTest:
         time_dict = {}
 
         with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-            results = pool.starmap(cpu_calculation, [(number_a, i, size) for i in range(1, 11)])
+            results = pool.starmap(cpu_calculation, [(number_a, i, size) for i in range(1, iterations)])
 
         if self.debug:
             for i, elapsed_time, cpu_load, cpu_freq in results:
