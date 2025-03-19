@@ -128,7 +128,7 @@ if __name__ == '__main__':
     stresstify.plot(x, y, x_label='Time', y_label='CPU %', title='CPU Test', type='window') # or type='console'
 ```
 Output:
-![plot](https://ibb.co/DPfGXbRH)
+![plot](https://i.ibb.co/RGThnSDk/Figure-1.png)
 or
 ```
                                       CPU Test                                  
