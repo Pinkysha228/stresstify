@@ -109,4 +109,52 @@ Output:
 {'C:\\': {'mountpoint': 'C:\\', 'total_size_GB': 181.64, 'used_size_GB': 157.15, 'free_size_GB': 24.49, 'usage_percent': 86.5}, 'D:\\': {'mountpoint': 'D:\\', 'total_size_GB': 214.45, 'used_size_GB': 168.92, 'free_size_GB': 45.53, 'usage_percent': 78.8}, 'E:\\': {'mountpoint': 'E:\\', 'total_size_GB': 80.0, 'used_size_GB': 16.71, 'free_size_GB': 63.29, 'usage_percent': 20.9}}
 ```
 ***
+### Plot
+The `plot()` method is used for quickly creating plots that can be displayed in the console or opened in a separate window. The method supports a couple of parameters:
+
+`x`: This parameter accepts ONLY a list with float elements inside. It is used for the x-coordinate values.
+`y`: This parameter accepts ONLY a list with float elements inside. It is used for the y-coordinate values.
+`x_label`: Label for the x-axis.
+`y_label`: Label for the y-axis.
+`title`: Title label.
+`type`: This parameter accepts `console` and `window`. When set to `console`, the program will display the plot in the console, and when set to `window`, it will open a window with the plot.
+``` python
+import stresstify
+if __name__ == '__main__':
+    root = stresstify.StressTest(debug=True)
+    result = root.cpu_test(iterations=8)
+    x = list(result['time_dict'].keys())
+    y = list(result['cpu_load_dict'].values())[1:]
+    stresstify.plot(x, y, x_label='Time', y_label='CPU %', title='CPU Test', type='window') # or type='console'
+```
+Output:
+![plot](https://ibb.co/DPfGXbRH)
+or
+```
+                                      CPU Test                                  
+    ┌──────────────────────────────────────────────────────────────────────────┐
+38.5┤        *                                                                 │
+    │       **                                                                 │
+    │       **                                                                 │
+34.9┤      *  *                                                                │
+    │      *  *                                                                │
+    │     *    *                                                               │
+31.3┤     *    *                                                               │
+    │    *      *                                                              │
+27.6┤    *      *                                                              │
+    │   *        *                                                             │
+    │   *        *                                                             │
+24.0┤  *          *                                                            │
+    │  *          *                                                            │
+    │ *            *                                                           │
+20.4┤ *            *                                                           │
+    │*              *                                                          │
+    │*              *        *                                        *        │
+16.8┤                ******** **************************************** ********│
+    └┬─────────────────┬──────────────────┬─────────────────┬─────────────────┬┘
+    1.0               3.2                5.5               7.8             10.0 
+CPU %                                   Time                                    
+```
+
+***
 ### [Project Source Code](https://github.com/Pinkysha228/stresstify)
