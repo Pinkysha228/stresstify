@@ -4,6 +4,30 @@ import numpy as np
 import os
 import multiprocessing
 import cpuinfo
+import gc
+import plotext as plt
+import matplotlib.pyplot
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as mplt
+
+
+
+def plot(x: list[float], y: list[float], x_label, y_label, title, type):
+    if type == "console":
+        plt.plot(x, y, marker='*', color='red')
+
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+        plt.title(title)
+
+        plt.show()
+    elif type == 'window':
+        mplt.plot(x, y, color='blue')
+        mplt.xlabel(x_label)
+        mplt.ylabel(y_label)
+        mplt.title(title)
+
+        mplt.show()
 
 
 def cpu_info():
@@ -44,12 +68,19 @@ def disk_info():
 
 
 def cpu_calculation(number_a, i, size=10000000):
-    start_time = time.time()
-    number_a ** size
-    elapsed_time = round(time.time() - start_time, 2)
-    cpu_load = psutil.cpu_percent(interval=1)
-    cpu_freq = psutil.cpu_freq().current
-    return i, elapsed_time, cpu_load, cpu_freq
+    try:
+        start_time = time.time()
+        result = number_a ** size
+        elapsed_time = round(time.time() - start_time, 2)
+        cpu_load = psutil.cpu_percent(interval=1)
+        cpu_freq = psutil.cpu_freq().current
+
+        del result
+        gc.collect()
+
+        return i, elapsed_time, cpu_load, cpu_freq
+    except MemoryError:
+        return i, None, None, None
 
 
 class StressTest:
@@ -143,13 +174,20 @@ class StressTest:
 
         if self.debug:
             for i, elapsed_time, cpu_load, cpu_freq in results:
-                cpu_load_dict[i] = cpu_load
-                cpu_freq_dict[i] = cpu_freq
-                time_dict[i] = elapsed_time
+                if cpu_load is not None:
+                    cpu_load_dict[i] = cpu_load
+                if cpu_freq is not None:
+                    cpu_freq_dict[i] = cpu_freq
+                if elapsed_time is not None:
+                    time_dict[i] = elapsed_time
 
-            average_cpu_load = round(sum(cpu_load_dict.values()) / len(cpu_load_dict), 2)
-            average_cpu_freq = round(sum(cpu_freq_dict.values()) / len(cpu_freq_dict), 2)
-            average_time = round(sum(time_dict.values()) / len(time_dict), 2)
+            valid_cpu_loads = [load for load in cpu_load_dict.values() if load is not None]
+            valid_cpu_freqs = [freq for freq in cpu_freq_dict.values() if freq is not None]
+            valid_times = [time for time in time_dict.values() if time is not None]
+
+            average_cpu_load = round(sum(valid_cpu_loads) / len(valid_cpu_loads), 2) if valid_cpu_loads else 0
+            average_cpu_freq = round(sum(valid_cpu_freqs) / len(valid_cpu_freqs), 2) if valid_cpu_freqs else 0
+            average_time = round(sum(valid_times) / len(valid_times), 2) if valid_times else 0
 
             cpu_full_dict = {
                 'average_cpu_load': average_cpu_load,
