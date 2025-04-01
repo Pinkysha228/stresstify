@@ -7,13 +7,18 @@ import cpuinfo
 import gc
 import plotext as plt
 import matplotlib.pyplot
+
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as mplt
 
 
+def plot(x: list[float], y: list[float], x_label, y_label, title, plot_type):
+    valid_types = ['console', 'window']
 
-def plot(x: list[float], y: list[float], x_label, y_label, title, type):
-    if type == "console":
+    if plot_type not in valid_types:
+        raise ValueError(f"Invalid type '{plot_type}'. Possible types: {', '.join(valid_types)}")
+
+    if plot_type == "console":
         plt.plot(x, y, marker='*', color='red')
 
         plt.xlabel(x_label)
@@ -21,7 +26,7 @@ def plot(x: list[float], y: list[float], x_label, y_label, title, type):
         plt.title(title)
 
         plt.show()
-    elif type == 'window':
+    elif plot_type == 'window':
         mplt.plot(x, y, color='blue')
         mplt.xlabel(x_label)
         mplt.ylabel(y_label)
@@ -89,7 +94,6 @@ def cpu_calculation(i, size=5000, max_retries=3):
     return i, None, None, None
 
 
-
 class StressTest:
     def ram_test(self, size=8, debug=False):
         num_elements = size * 1024 * 1024 // 4
@@ -114,7 +118,7 @@ class StressTest:
                          'ram_used': ram_used}
             return full_dict
 
-    def memory_test(self, debug=False, size=128*1024**2):
+    def memory_test(self, debug=False, size=128 * 1024 ** 2):
         filename = 'testfile.bin'
 
         write_time_dict = {}
@@ -161,7 +165,8 @@ class StressTest:
             }
             return full_dict
 
-    def cpu_test(self, size=11585, iterations=11, debug=False):
+    def cpu_test(self, size=11585, iterations=11, debug=False, visualize=False, x_label='',
+                 y_label='', title='', plot_type=''):
         start_cpu_load = psutil.cpu_percent(interval=1)
         start_cpu_freq = psutil.cpu_freq().current
 
@@ -199,6 +204,10 @@ class StressTest:
                 'cpu_freq_dict': cpu_freq_dict,
                 'time_dict': time_dict
             }
+            if visualize:
+                x = list(cpu_full_dict['time_dict'].keys())
+                y = list(cpu_full_dict['cpu_load_dict'].values())[1:]
+                plot(x, y, title=title, x_label=x_label, y_label=y_label, plot_type=plot_type)
 
             return cpu_full_dict
         else:
