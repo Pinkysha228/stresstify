@@ -95,28 +95,43 @@ def cpu_calculation(i, size=5000, max_retries=3):
 
 
 class StressTest:
-    def ram_test(self, size=8, debug=False):
-        num_elements = size * 1024 * 1024 // 4
-        elements = []
-        start_time = time.time()
-        ram_used = {}
-        while True:
-            try:
-                memory = np.ones(num_elements, dtype=np.float32)
-                elements.append(memory)
+    def ram_test(size_mb=8, duration_sec=30, debug=False):
+    """
+    Стрес-тест RAM.
+    - size_mb: розмір одного блоку в мегабайтах
+    - duration_sec: максимальний час тесту
+    - debug: збирати статистику використання RAM
+    """
+    num_elements = size_mb * 1024 * 1024 // 4  # float32 -> 4 байти
+    blocks = []
+    ram_stats = {}
 
-                if debug:
+    start_time = time.time()
+    try:
+        while time.time() - start_time < duration_sec:
+            block = np.ones(num_elements, dtype=np.float32)
+            blocks.append(block)
+
+            block[:1000] *= 2
+
+            if debug:
+                if int((time.time() - start_time) * 2) % 1 == 0:
                     used_percent = psutil.virtual_memory().percent
-                    ram_used[round(time.time() - start_time, 2)] = f'{used_percent:.2f}%'
-            except MemoryError:
-                elements.clear()
-                break
+                    ram_stats[round(time.time() - start_time, 2)] = f'{used_percent:.2f}%'
 
-        if debug:
-            elapsed_time = round(time.time() - start_time)
-            full_dict = {'elapsed_time': elapsed_time,
-                         'ram_used': ram_used}
-            return full_dict
+            time.sleep(0.01)\
+
+    except MemoryError:
+        print("MemoryError: досягнуто межі доступної RAM.")
+
+    finally:
+        del blocks
+
+    if debug:
+        elapsed_time = round(time.time() - start_time, 2)
+        return {'elapsed_time': elapsed_time, 'ram_used': ram_stats}
+
+    return {'elapsed_time': round(time.time() - start_time, 2), 'ram_used': None}
 
     def memory_test(self, debug=False, size=128 * 1024 ** 2):
         filename = 'testfile.bin'
@@ -212,3 +227,4 @@ class StressTest:
             return cpu_full_dict
         else:
             return results[0][1] if results and results[0][1] is not None else 0
+
